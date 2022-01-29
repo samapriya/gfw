@@ -125,8 +125,10 @@ def list_data():
         # print(json.dumps(response.json(), indent=2))
         for items in response.json():
             print(f"{items['id']} ===> Updated: {items['lastUpdated']}")
+    elif response.status_code ==500:
+        print('Failed with error code 500: Internal Server Error')
     else:
-        print(f"Failed to get data list with error code :{response.status_code}")
+        print(f"Failed to get data list with error code :{response.status_code}: {response.text}")
 
 
 def dl_from_parser(args):
@@ -166,7 +168,7 @@ def list_files(id):
 
 
 def fl_from_parser(args):
-    list_files(fid=args.id)
+    list_files(id=args.id)
 
 
 def downloader(url, local_path, headers):
