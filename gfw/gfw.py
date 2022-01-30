@@ -5,10 +5,74 @@ import os
 import json
 import getpass
 import argparse
+import pkg_resources
+from tabulate import tabulate
 from bs4 import BeautifulSoup as bs
 from os.path import expanduser
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+lpath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(lpath)
+
+
+class Solution:
+    def compareVersion(self, version1, version2):
+        versions1 = [int(v) for v in version1.split(".")]
+        versions2 = [int(v) for v in version2.split(".")]
+        for i in range(max(len(versions1), len(versions2))):
+            v1 = versions1[i] if i < len(versions1) else 0
+            v2 = versions2[i] if i < len(versions2) else 0
+            if v1 > v2:
+                return 1
+            elif v1 < v2:
+                return -1
+        return 0
+
+
+ob1 = Solution()
+
+# Get package version
+def gfw_version():
+    url = "https://pypi.org/project/gfw/"
+    source = requests.get(url)
+    html_content = source.text
+    soup = bs(html_content, "html.parser")
+    company = soup.find("h1")
+    vcheck = ob1.compareVersion(
+        company.string.strip().split(" ")[-1],
+        pkg_resources.get_distribution("gfw").version,
+    )
+    if vcheck == 1:
+        print(
+            "\n"
+            + "========================================================================="
+        )
+        print(
+            "Current version of gfw is {} upgrade to lastest version: {}".format(
+                pkg_resources.get_distribution("gfw").version,
+                company.string.strip().split(" ")[-1],
+            )
+        )
+        print(
+            "========================================================================="
+        )
+    elif vcheck == -1:
+        print(
+            "\n"
+            + "========================================================================="
+        )
+        print(
+            "Possibly running staging code {} compared to pypi release {}".format(
+                pkg_resources.get_distribution("gfw").version,
+                company.string.strip().split(" ")[-1],
+            )
+        )
+        print(
+            "========================================================================="
+        )
+
+
+gfw_version()
 
 # set credentials
 def auth(usr):
@@ -122,13 +186,27 @@ def list_data():
         headers=headers,
     )
     if response.status_code == 200:
-        # print(json.dumps(response.json(), indent=2))
+        dataset_json = []
         for items in response.json():
-            print(f"{items['id']} ===> Updated: {items['lastUpdated']}")
-    elif response.status_code ==500:
-        print('Failed with error code 500: Internal Server Error')
+            dataset = {
+                "dataset_id": items["id"],
+                "last_updated": items["lastUpdated"],
+            }
+            dataset_json.append(dataset)
+            print(tabulate(dataset_json, headers="keys"))
+    elif response.status_code == 500:
+        print("Failed with error code 500: Internal Server Error" + "\n")
+        print(
+            f'Fetching Offline data list update :{time.ctime(os.path.getmtime(os.path.join(lpath, "datasets.json")))}'
+            + "\n"
+        )
+        with open(os.path.join(lpath, "datasets.json")) as f:
+            r = json.load(f)
+            print(tabulate(r, headers="keys"))
     else:
-        print(f"Failed to get data list with error code :{response.status_code}: {response.text}")
+        print(
+            f"Failed to get data list with error code :{response.status_code}: {response.text}"
+        )
 
 
 def dl_from_parser(args):
