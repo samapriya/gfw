@@ -75,10 +75,9 @@ def gfw_version():
 gfw_version()
 
 # set credentials
-def auth(usr):
+def auth():
     home = expanduser("~/pygfw.json")
-    if usr is None:
-        usr = input("Enter email: ")
+    usr = input("Enter email: ")
     pwd = getpass.getpass("Enter password: ")
     data = {"username": usr, "password": pwd}
     with open(home, "w") as outfile:
@@ -86,7 +85,7 @@ def auth(usr):
 
 
 def auth_from_parser(args):
-    auth(usr=args.username)
+    auth()
 
 
 ########################## Fetches the auth token and creates an header with JWT ############################################
@@ -188,12 +187,18 @@ def list_data():
     if response.status_code == 200:
         dataset_json = []
         for items in response.json():
-            dataset = {
-                "dataset_id": items["id"],
-                "last_updated": items["lastUpdated"],
-            }
-            dataset_json.append(dataset)
-            print(tabulate(dataset_json, headers="keys"))
+            if items['lastUpdated']:
+                dataset = {
+                    "dataset_id": items["id"],
+                    "last_updated": items["lastUpdated"],
+                }
+                dataset_json.append(dataset)
+        with open(os.path.join(lpath, "datasets.json")) as f:
+            r = json.load(f)
+            if len(dataset_json)>len(r):
+                with open(os.path.join(lpath, "datasets.json"), "w") as outfile:
+                    json.dump(dataset_json, outfile,indent=2)
+        print(tabulate(dataset_json, headers="keys"))
     elif response.status_code == 500:
         print("Failed with error code 500: Internal Server Error" + "\n")
         print(
@@ -315,8 +320,6 @@ def main(args=None):
     parser_auth = subparsers.add_parser(
         "auth", help="Authenticates and saves your username and password"
     )
-    required_named = parser_auth.add_argument_group("Required named arguments.")
-    required_named.add_argument("--username", help="Username", required=True)
     parser_auth.set_defaults(func=auth_from_parser)
 
     parser_dl = subparsers.add_parser("data-list", help="Regenerates your API token")
