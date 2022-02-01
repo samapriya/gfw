@@ -53,7 +53,7 @@ Simple CLI for Global Fishing Watch Data
 positional arguments:
   {auth,data-list,file-list,download}
     auth                Authenticates and saves your username and password
-    data-list           Regenerates your API token
+    data-list           Generate data list with Dataset ID & timestamp
     file-list           File list for dataset
     download            Download datasets
 
@@ -88,6 +88,10 @@ You can also download a specific file from the file-list tool
 
 
 ## Changelog
+
+#### v0.0.4
+- added readme pages
+- updated tool description and readme
 
 #### v0.0.3
 - added nested check for JSON objects from data list

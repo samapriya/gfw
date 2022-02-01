@@ -322,7 +322,7 @@ def main(args=None):
     )
     parser_auth.set_defaults(func=auth_from_parser)
 
-    parser_dl = subparsers.add_parser("data-list", help="Regenerates your API token")
+    parser_dl = subparsers.add_parser("data-list", help="Generate data list with Dataset ID & timestamp")
     parser_dl.set_defaults(func=dl_from_parser)
 
     parser_fl = subparsers.add_parser("file-list", help="File list for dataset")

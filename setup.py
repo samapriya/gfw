@@ -9,7 +9,7 @@ def readme():
 
 setuptools.setup(
     name="gfw",
-    version="0.0.3",
+    version="0.0.4",
     packages=find_packages(),
     package_data={"": ["datasets.json"]},
     url="https://github.com/samapriya/gfw",
