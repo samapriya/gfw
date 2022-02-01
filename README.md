@@ -6,6 +6,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/gfw)
 ![PyPI](https://img.shields.io/pypi/v/gfw)
 [![Downloads](https://pepy.tech/badge/gfw/month)](https://pepy.tech/project/gfw)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5937071.svg)](https://doi.org/10.5281/zenodo.5937071)
 
 The Global Fishing Watch map is the first open-access online platform for visualization and analysis of vessel-based human activity at sea, including fishing activity, encounters between vessels, night light vessel detection and vessel presence. This tool is designed to help interact programmatically with the [Global Fishing Watch data](https://globalfishingwatch.org/datasets-and-code/) and is not based on any official API so expect features to break once in a while.
 
@@ -15,6 +16,8 @@ Disclaimer: This is an unofficial tool. Is not licensed or endorsed by Global Fi
 #### Citation
 
 ```
+Samapriya Roy. (2022). samapriya/gfw: Simple CLI for Global Fishing Watch Data (0.0.4).
+Zenodo. https://doi.org/10.5281/zenodo.5937071
 ```
 
 Readme Docs [available online](https://samapriya.github.io/gfw)
